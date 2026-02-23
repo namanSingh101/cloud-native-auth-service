@@ -1,0 +1,29 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python cache
+**/__pycache__/
+**/*.pyc
+**/*.pyo 
+*.egg-info/
+
+# Environment variables
+.env
+.env.*
+
+#Scripts
+docker_compose_server.sh
+run_server.sh
+
+#Editor 
+.vscode/
+.idea/
+*.iml
+
+#OS
+.DS_Store
+Thumbs.db
+
+#Logs
+*.log

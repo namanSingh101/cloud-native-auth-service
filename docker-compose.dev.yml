@@ -1,0 +1,58 @@
+services:
+  fastapi:
+    image: eric/fastapi-api:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fast_api_server
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size : "10m"
+        max-file : "3"
+
+    healthcheck:
+      test : ["CMD","curl","-f","http://localhost:8000/api/v1/health/live"]
+      interval: 30s
+      timeout: 5s
+      retries: 2
+
+    networks:
+      - backend
+    
+  redis:
+    image: redis:8.4-alpine
+    container_name: redis_server
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    logging:
+      driver: "json-file"
+      options:
+        max-file : "2"
+        max-size : "5m"
+    # volumes:
+    #   - redis_data:/data #persist redis data (data folder mount point and redis_data is volume)
+    healthcheck:
+      test : ["CMD","redis-cli","ping"]
+      interval: 5s
+      timeout: 3s 
+      retries: 3
+
+    restart: unless-stopped
+
+networks:
+  backend : 
+    driver: bridge #by default it is bridge
+
+# volumes:
+#   redis_data:   #volume for persistence
+

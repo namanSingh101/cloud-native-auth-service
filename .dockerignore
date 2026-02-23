@@ -1,0 +1,39 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python cache
+**/__pycache__/
+**/*.pyc
+**/*.pyo 
+*.egg-info/
+
+#Environment variables
+.env
+.env.*
+
+#Scripts
+docker_compose_server.sh
+run_server.sh
+
+#Git
+.git/
+.gitignore
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+#Logs
+*.log
+
+#Docker
+.dockerignore
+docker-compose*.yml 
+
+# Docs / README
+README.md
