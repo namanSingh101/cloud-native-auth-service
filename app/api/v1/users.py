@@ -56,7 +56,7 @@ async def create_user(request: Request, response: Response, user: UserCreate, db
         select(User).where(
             or_(
                 User.username == user.username.lower(),
-                User.email == user.username.lower()
+                User.email == user.email.lower()
             )
         )
     )
@@ -74,6 +74,7 @@ async def create_user(request: Request, response: Response, user: UserCreate, db
         password_hash=hash_password(user.password)
     )
     db.add(new_user)
+    await db.flush()   
     await db.refresh(new_user)
     return ApiResponse(success=True, message="New user created successfully!", data=UserPrivateResponse.model_validate(new_user))
 
