@@ -1,14 +1,14 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
+
 from app.schemas import ErrorResponse
-import time
-from app.utils import *
+from app.utils import add_duration
 
 async def rate_limit_exceeded_handler(request: Request,exc: RateLimitExceeded) -> JSONResponse:
     #print("Rate limit exceeded")
 
-    print(exc)
+    #print(exc)
     
     parts = exc.detail.split(" per ")  #10 per 1 minute --> 10 , 1 minute
     retry_after = str(parts[1].strip())

@@ -1,13 +1,9 @@
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from redis import Redis
-from app.exception_handler import *
 
-from app.core import *
+from app.core import get_settings
 
 settings = get_settings()
-
-#redis_client = Redis.from_url(settings.REDIS_URL)
 
 limiter = Limiter(
     key_func=get_remote_address,
@@ -16,7 +12,3 @@ limiter = Limiter(
     default_limits=[settings.RATE_LIMIT_DEFAULT],
     headers_enabled=True,
 )
-
-
-# Global decorator (applies to all routes registered after this)
-#global_limit_decorator = limiter.limit(settings.RATE_LIMIT_DEFAULT)

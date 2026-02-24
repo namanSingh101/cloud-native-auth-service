@@ -1,6 +1,7 @@
 import re
 from pydantic.functional_validators import AfterValidator
 from typing import Annotated
+
 from app.core import BusinessRuleViolation
 
 PASSWORD_REGEX = re.compile(

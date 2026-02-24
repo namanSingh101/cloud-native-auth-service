@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field, field_validator,model_validator
-from typing import Literal, Annotated
+from pydantic import BaseModel, Field,model_validator
+from typing import Literal
 from app.utils import StrongPassword
 from app.core import BusinessRuleViolation
 

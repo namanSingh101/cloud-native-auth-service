@@ -1,9 +1,8 @@
-from pydantic import BaseModel, ConfigDict, Field, EmailStr,model_validator,field_validator
+from pydantic import BaseModel, ConfigDict, Field, EmailStr,model_validator
 from uuid import UUID
 from datetime import datetime
 from enum import Enum
 from typing import Optional,Annotated
-import re
 
 from app.core import BusinessRuleViolation
 from app.utils import StrongPassword,PhoneNumber

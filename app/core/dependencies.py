@@ -6,10 +6,10 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.schemas import TokenPayload
 from app.core import decode_access_token
 from app.db import get_db
 from app.models import User
+from app.schemas import TokenPayload
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
@@ -32,7 +32,7 @@ async def get_current_token(token: Annotated[str, Depends(oauth2_scheme)]) -> To
 
         if not sub or not token_version or not exp:
             raise credentials_exception
-    
+
           # Validate UUID format
         try:
             UUID(sub)
@@ -68,6 +68,6 @@ async def get_current_user(token_payload: Annotated[TokenPayload, Depends(get_cu
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Inactive user account",
         )
-    print("token payload",token_payload)
-    print("user",user)
+    print("token payload", token_payload)
+    print("user", user)
     return user

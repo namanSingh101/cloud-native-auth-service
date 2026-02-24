@@ -1,11 +1,10 @@
-from datetime import UTC,datetime,timedelta,timezone
+from datetime import UTC,datetime,timedelta
 from pwdlib import PasswordHash
 from typing import Optional
 import jwt
-from jwt import ExpiredSignatureError,InvalidTokenError
+from jwt import InvalidTokenError
 
 from app.core import get_settings
-from app.schemas import TokenPayload
 
 settings = get_settings()
 

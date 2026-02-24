@@ -36,7 +36,9 @@ class Settings(BaseSettings):
     # redis settings
     REDIS_HOST: str = Field(..., description="Redis host")
     REDIS_PORT: str = Field(..., description="Redis port")
-    REDIS_DB: int = Field(default=0, description="Type of db")
+    REDIS_DB_RATE_LIMIT:int = Field(default=0, description="Logical seperation for storing rate limiting keys")
+    REDIS_DB_OTP:int = Field(default=0, description="For storing hashed otp")
+    #REDIS_DB: int = Field(default=0, description="Type of db")
     REDIS_PSWD: Optional[str] = None
     REDIS_USE_SSL: bool = False
 
@@ -60,6 +62,10 @@ class Settings(BaseSettings):
     MAIL_STARTTLS: bool = Field(default=True)
     MAIL_SSL_TLS: bool = Field(default=False)
 
+    #Otp service
+    OTP_TTL_SECONDS:int = Field(default=300,description="Time for otp to be stored")
+    OTP_KEY_PREFIX:str= Field(...,description="Prefix for stored key")
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -80,11 +86,11 @@ class Settings(BaseSettings):
         if self.REDIS_PSWD:
             return (
                 f"{scheme}://:{self.REDIS_PSWD}"
-                f"@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+                f"@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB_RATE_LIMIT}"
             )
 
         return (
-            f"{scheme}://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+            f"{scheme}://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB_RATE_LIMIT}"
         )
 
 

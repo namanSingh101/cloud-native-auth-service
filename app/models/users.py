@@ -1,9 +1,10 @@
-from app.db import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Boolean, DateTime, func, ForeignKey, Integer, Enum as SAEnum,text
-from uuid import uuid4
-from typing import Optional, List
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Boolean, DateTime, func, Integer, Enum as SAEnum,text
 from sqlalchemy.dialects.postgresql import UUID, ENUM
+from uuid import uuid4
+from typing import Optional
+
+from app.db import Base
 from app.schemas import UserRole
 
 
