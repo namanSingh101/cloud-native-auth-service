@@ -29,6 +29,3 @@ def hash_otp(otp:str) -> str:
 
 def verify_otp(plain_otp:str,hashed_otp:str) -> bool:
     return hmac.compare_digest(hash_otp(plain_otp),hashed_otp)
-
-def build_otp_key(email:EmailStr) -> str:
-    return f"{settings.OTP_KEY_PREFIX}{email}"

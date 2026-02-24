@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str = Field(..., description="Redis host")
     REDIS_PORT: str = Field(..., description="Redis port")
     REDIS_DB_RATE_LIMIT:int = Field(default=0, description="Logical seperation for storing rate limiting keys")
-    REDIS_DB_OTP:int = Field(default=0, description="For storing hashed otp")
+    REDIS_DB_OTP:int = Field(default=1, description="For storing hashed otp")
     #REDIS_DB: int = Field(default=0, description="Type of db")
     REDIS_PSWD: Optional[str] = None
     REDIS_USE_SSL: bool = False

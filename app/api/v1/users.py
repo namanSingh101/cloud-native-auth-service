@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
 
 
-from app.core import get_settings, limiter, get_current_user,hash_password
+from app.core import get_settings, limiter, get_current_user,hash_password,get_redis_manager,RedisManager
 from app.db import get_db
 from app.models import User
 from app.services import send_otp_email
@@ -106,12 +106,16 @@ async def delete_user(request: Request, response: Response, current_user: Annota
 
 
 @router.get("/send-otp", response_model=ApiResponse[None], response_model_exclude_none=True,status_code=status.HTTP_200_OK)
-async def send_otp(request: Request, response: Response, background_task: BackgroundTasks) -> ApiResponse[None]:
+async def send_otp(request: Request, response: Response, background_task: BackgroundTasks,redis:Annotated[RedisManager,Depends(get_redis_manager)]) -> ApiResponse[None]:
     try:
         otp = generate_otp()
         hashed_otp = hash_otp(otp=otp)
         email: NameEmail = NameEmail._validate("Naman <naman10jan@gmail.com>")
-        background_task.add_task(send_otp_email, email, hashed_otp)
+
+        #save the hashed otp 
+        await redis.set_otp(email=email.email,hashed_otp=hashed_otp)
+        
+        background_task.add_task(send_otp_email, email, otp)
 
         return ApiResponse(success=True, message="Email sent succesfully")
     except (ConnectionErrors, Exception) as e:
