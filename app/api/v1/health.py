@@ -13,8 +13,8 @@ async def liveness_check(request:Request,response:Response):
     response.status_code = status.HTTP_200_OK
     return {"status":"alive"}
 
-@router.get("/ready",status_code=status.HTTP_200_OK,response_model=HealthResponse)
-@limiter.exempt
-async def readiness_check(request:Request,response:Response):
-    response.status_code = status.HTTP_200_OK
-    return {"status":"ready"}
+# @router.get("/ready",status_code=status.HTTP_200_OK,response_model=HealthResponse)
+# @limiter.exempt
+# async def readiness_check(request:Request,response:Response):
+#     response.status_code = status.HTTP_200_OK
+#     return {"status":"ready"}

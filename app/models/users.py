@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Boolean, DateTime, func, Integer, Enum as SAEnum,text
+from sqlalchemy import String, Boolean, DateTime, func, Integer, Enum as SAEnum, text
 from sqlalchemy.dialects.postgresql import UUID, ENUM
 from uuid import uuid4
 from typing import Optional
@@ -29,6 +29,8 @@ class User(Base):
         Boolean, default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False)
+    is_verified: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False)
     role: Mapped[UserRole] = mapped_column(
         SAEnum(UserRole, name="userrole", create_type=True, native_enum=False), default=UserRole.user, nullable=False)
     token_version: Mapped[int] = mapped_column(
@@ -39,4 +41,4 @@ class User(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self) -> str:
-        return f"User(id={self.id!r},first_name={self.first_name!r},email={self.email!r},created_at={self.created_at!r})"
+        return f"User(id={self.id!r},username={self.username},first_name={self.first_name!r},email={self.email!r},phone_number={self.phone_number!r},is_active={self.is_active!r},role={self.role},last_name={self.last_name!r},created_at={self.created_at!r})"

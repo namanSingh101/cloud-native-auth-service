@@ -25,7 +25,8 @@ WORKDIR /app
 
 # install runtime libs necessary for psycopg
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev \                  
+    libpq-dev \    
+    curl \              
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12

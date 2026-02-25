@@ -15,10 +15,14 @@ from app.api import v1_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
+    print("Application starting up...")
     await redis_manager.init()
+    print("Redis started")
     yield
     # Shutdown
+    print("Redis closed")
     await redis_manager.close()
+    print("Application shuting down...")
 
 
 def register_exception_handlers(app: FastAPI) -> None:

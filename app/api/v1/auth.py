@@ -51,13 +51,10 @@ async def login_for_access_token(
     return ApiResponse(success=True, data=Token(access_token=access_token, token_type="bearer"))
 
 
-"""Change user password"""
-
-
 @router.patch("/password", status_code=status.HTTP_204_NO_CONTENT)
 @limiter.limit("5/minute")
 async def change_password(request: Request, response: Response, pswd_payload: NewPswdPayload, current_user: Annotated[User, Depends(get_current_user)], db: Annotated[AsyncSession, Depends(get_db)]):
-
+    """Change user password"""
     if not verify_password(pswd_payload.current_password, current_user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Incorrect password try again",

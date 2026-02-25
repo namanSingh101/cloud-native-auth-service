@@ -26,6 +26,7 @@ class UserCreate(UserBase):
     last_name: Optional[Name] = None
     phone_number:Optional[PhoneNumber] = None
     role: UserRole = UserRole.user
+    is_verified:Optional[bool] = False
 
 
 
