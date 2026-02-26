@@ -100,7 +100,7 @@ async def delete_user(request: Request, response: Response, current_user: Annota
 async def send_otp(request: Request, response: Response, background_task: BackgroundTasks, current_user: Annotated[User, Depends(get_current_user)], redis: Annotated[RedisManager, Depends(get_redis_manager)]) -> ApiResponse[None]:
     """Email service functionality"""
     ttl = await redis.get_otp_ttl(current_user.email)
-
+    "working good "
     if ttl is not None:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
