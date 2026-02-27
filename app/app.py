@@ -7,7 +7,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from contextlib import asynccontextmanager
 
 # from slowapi import _rate_limit_exceeded_handler
-from app.core import get_settings, limiter, AppException, redis_manager
+from app.core import get_settings, limiter, AppException, get_redis_manager
 from app.exception_handler import app_exception_handler, http_exception_handler, validation_exception_handler, rate_limit_exceeded_handler, unhandled_exception_handler
 from app.api import v1_router
 
@@ -16,12 +16,12 @@ from app.api import v1_router
 async def lifespan(app: FastAPI):
     # Startup
     print("Application starting up...")
-    await redis_manager.init()
+    await get_redis_manager().init()
     print("Redis started")
     yield
     # Shutdown
     print("Redis closed")
-    await redis_manager.close()
+    await get_redis_manager().close()
     print("Application shuting down...")
 
 

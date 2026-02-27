@@ -64,7 +64,13 @@ class Settings(BaseSettings):
 
     #Otp service
     OTP_TTL_SECONDS:int = Field(default=300,description="Time for otp to be stored")
-    OTP_KEY_PREFIX:str= Field(...,description="Prefix for stored key")
+    #OTP_KEY_PREFIX:str= Field(...,description="Prefix for stored key")
+    OTP_KEY_VERIFY:str = Field(...,description="user verification key")
+    OTP_KEY_LOGIN:str = Field(...,description="user login key")
+
+    #Cache service
+    CACHE_TTL_SECONDS:int = Field(default=3600,description="Time for cache to be stored")
+    CACHE_KEY:str = Field(...,description="cache key")
 
     model_config = SettingsConfigDict(
         env_file=".env",
