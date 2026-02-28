@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
 from pydantic import NameEmail
 
-from app.core import get_settings, limiter, get_current_user, hash_password, get_redis_manager, RedisManager
+from app.core import get_settings, limiter, get_current_user, hash_password,get_otp_manager,OTPRedisManager
 from app.db import get_db
 from app.models import User
 from app.services import send_otp_email
@@ -24,22 +24,6 @@ async def read_me(request: Request, response: Response, current_user: Annotated[
     """To get the users details using token."""
     print(current_user)
     return ApiResponse(success=True, message="User details", data=UserPrivateResponse.model_validate(current_user))
-
-
-# """To get user details based on user id"""
-
-
-# @router.get("/{user_id}", response_model=UserPublicResponse)
-# @limiter.limit("5/second")
-# async def get_user(request: Request, response: Response, user_id: UUID, db: Annotated[AsyncSession, Depends(get_db)]):
-#     result = await db.execute(
-#         select(User).where(User.id == user_id)
-#     )
-#     user = result.scalars().first()
-#     if user:
-#         return user
-#     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-#                         detail="User not found")
 
 
 @router.post("", response_model=ApiResponse[UserPrivateResponse], response_model_exclude_none=True, status_code=status.HTTP_201_CREATED)
@@ -97,9 +81,9 @@ async def delete_user(request: Request, response: Response, current_user: Annota
 
 
 @router.post("/request-email-otp", response_model=ApiResponse[None], response_model_exclude_none=True, status_code=status.HTTP_200_OK)
-async def send_otp(request: Request, response: Response, background_task: BackgroundTasks, current_user: Annotated[User, Depends(get_current_user)], redis: Annotated[RedisManager, Depends(get_redis_manager)]) -> ApiResponse[None]:
+async def send_otp(request: Request, response: Response, background_task: BackgroundTasks, current_user: Annotated[User, Depends(get_current_user)], redis: Annotated[OTPRedisManager, Depends(get_otp_manager)]) -> ApiResponse[None]:
     """Email service functionality"""
-    ttl = await redis.get_otp_ttl(current_user.email)
+    ttl = await redis.get_otp_ttl(current_user.email,key_prefix=settings.OTP_KEY_VERIFY)
     "working good "
     if ttl is not None:
         raise HTTPException(
@@ -115,7 +99,7 @@ async def send_otp(request: Request, response: Response, background_task: Backgr
         ) if current_user.first_name else "User", email=current_user.email)
 
         # save the hashed otp
-        await redis.set_otp(email=email.email, hashed_otp=hashed_otp)
+        await redis.set_otp(email=email.email, hashed_otp=hashed_otp,key_prefix=settings.OTP_KEY_VERIFY)
 
         background_task.add_task(send_otp_email, email, otp)
 
