@@ -1,18 +1,25 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Boolean, DateTime, func, Integer, Enum as SAEnum, text
-from sqlalchemy.dialects.postgresql import UUID, ENUM
-from uuid import uuid4
-from typing import Optional
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
+import enum
+from datetime import datetime
+from typing import Optional, List
 
 from app.db import Base
-from app.schemas import UserRole
+#from app.schemas import UserRole
+
+class UserRole(str, enum.Enum):
+    admin = "admin"
+    user = "user"
+    moderator = "moderator"
 
 
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid4
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     username: Mapped[str] = mapped_column(
         String(50), unique=True, nullable=False)
@@ -32,13 +39,15 @@ class User(Base):
     is_verified: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False)
     role: Mapped[UserRole] = mapped_column(
-        SAEnum(UserRole, name="userrole", create_type=True, native_enum=False), default=UserRole.user, nullable=False)
+        SAEnum(UserRole, name="userrole", create_type=True), default=UserRole.user, nullable=False)
     token_version: Mapped[int] = mapped_column(
         Integer, server_default=text("1"), nullable=False)
-    created_at: Mapped[DateTime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now())
-    updated_at: Mapped[DateTime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    refresh_sessions: Mapped[List["RefreshSession"]] = relationship( # type: ignore[reportUndefinedVariable]
+        back_populates="user", cascade="all, delete-orphan") 
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     def __repr__(self) -> str:
-        return f"User(id={self.id!r},username={self.username},first_name={self.first_name!r},email={self.email!r},phone_number={self.phone_number!r},is_active={self.is_active!r},role={self.role},last_name={self.last_name!r},created_at={self.created_at!r})"
+        return f"User(id={self.id!r},username={self.username},first_name={self.first_name!r},last_name={self.last_name!r},email={self.email!r},phone_number={self.phone_number!r},role={self.role},is_verified={self.is_verified!r},is_active={self.is_active!r},token_version={self.token_version!r},password_hash=*******,updated_at={self.updated_at!r},created_at={self.created_at!r})"

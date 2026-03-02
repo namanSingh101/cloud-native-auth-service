@@ -12,6 +12,7 @@ Name = Annotated[str,Field(min_length=2,max_length=50)]
 class UserRole(str, Enum):
     admin = "admin"
     user = "user"
+    moderator = "moderator"
 
 
 class UserBase(BaseModel):
