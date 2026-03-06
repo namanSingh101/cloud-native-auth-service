@@ -136,7 +136,7 @@ class OTPRedisManager(BaseRedisManager):
 class CacheRedisManager(BaseRedisManager):
     @property
     def db_index(self) -> int:
-        return settings.REDIS_DB_OTP #1
+        return settings.REDIS_DB_CACHE #2
     
     def _cache_key(self,resource:str,identifier_prefix:str)->str:
         return f"{settings.CACHE_KEY}:{resource}:{identifier_prefix}"

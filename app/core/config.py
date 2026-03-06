@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     REDIS_PORT: str = Field(..., description="Redis port")
     REDIS_DB_RATE_LIMIT:int = Field(default=0, description="Logical seperation for storing rate limiting keys")
     REDIS_DB_OTP:int = Field(default=1, description="For storing hashed otp")
-    #REDIS_DB: int = Field(default=0, description="Type of db")
+    REDIS_DB_CACHE:int = Field(default=2,description="For cache purpose")
     REDIS_PSWD: Optional[str] = None
     REDIS_USE_SSL: bool = False
 
@@ -49,7 +49,11 @@ class Settings(BaseSettings):
     # auth system
     SECRET_KEY: SecretStr
     ALGO: str = "HS256"
-    TOKEN_EXPIRE_MIN: int = 30
+    #TOKEN_EXPIRE_MIN: int = 30
+
+    ACCESS_TOKEN_EXPIRE_MINUTES:int = Field(default=15, description="Access token expire minutes ")
+    REFRESH_TOKEN_EXPIRE_DAYS:int = Field(default=30, description="Refresh token expire days")
+    REFRESH_TOKEN_MAX_LIFETIME_DAYS:int = Field(default=90, description="Refresh token max expire days")
 
     # mail service
     MAIL_USERNAME: EmailStr = Field(..., description="Gmail address")
@@ -64,7 +68,6 @@ class Settings(BaseSettings):
 
     #Otp service
     OTP_TTL_SECONDS:int = Field(default=300,description="Time for otp to be stored")
-    #OTP_KEY_PREFIX:str= Field(...,description="Prefix for stored key")
     OTP_KEY_VERIFY:str = Field(...,description="user verification key")
     OTP_KEY_LOGIN:str = Field(...,description="user login key")
 

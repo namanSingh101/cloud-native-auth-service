@@ -1,11 +1,12 @@
 from pydantic import BaseModel, Field,model_validator
-from typing import Literal
+from typing import Literal,Optional
 from app.utils import StrongPassword
 from app.core import BusinessRuleViolation
 
 
 class Token(BaseModel):
     access_token: str
+    refresh_token:Optional[str] = None
     token_type: Literal["bearer"]
 
 
@@ -28,5 +29,7 @@ class NewPswdPayload(BaseModel):
             raise BusinessRuleViolation("New password must differ from current password")
         return self
 
+class RefreshTokenRequest(BaseModel):
+    refresh_token:Optional[str] = None 
 
 
