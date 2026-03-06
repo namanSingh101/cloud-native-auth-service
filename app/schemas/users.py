@@ -54,13 +54,17 @@ class UserPublicResponse(BaseModel):
 
 
 class UserPrivateResponse(UserPublicResponse):
-    first_name: Optional[Name] = None
-    last_name: Optional[Name] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     email: EmailStr
+    phone_number: Optional[str]
 
     # status
     is_active: bool
     role: UserRole = UserRole.user
+    is_verified:bool
+
 
     # Timestamp
+    updated_at:datetime
     created_at: datetime
