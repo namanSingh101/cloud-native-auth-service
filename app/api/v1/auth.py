@@ -116,7 +116,7 @@ async def change_password(request: Request, response: Response, pswd_payload: Ne
 
 @router.post("/refresh", response_model=ApiResponse[Token], status_code=status.HTTP_202_ACCEPTED, response_model_exclude_none=True)
 @limiter.limit("5/minute")
-async def refresh_access_token(request: Request, response: Response, current_user: Annotated[User, Depends(get_current_user)],db: Annotated[AsyncSession, Depends(get_db)]):
+async def refresh_access_token(request: Request, response: Response,db: Annotated[AsyncSession, Depends(get_db)]):
 
     credentials_exception = lambda detail : HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -149,8 +149,8 @@ async def refresh_access_token(request: Request, response: Response, current_use
         raise credentials_exception("Invalid token payload")
     
     #check user id  matchs with the current user getting from access token
-    if current_user.id != uuid.UUID(user_id):
-        raise credentials_exception("Access token is invalid") 
+    # if current_user.id != uuid.UUID(user_id):
+    #     raise credentials_exception("Access token is invalid") 
 
     smt = select(RefreshSession).where(RefreshSession.id == uuid.UUID(session_id)).options(
         selectinload(RefreshSession.user))  # avoid lazy load on async session
