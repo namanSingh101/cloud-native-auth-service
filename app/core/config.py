@@ -49,11 +49,11 @@ class Settings(BaseSettings):
     # auth system
     SECRET_KEY: SecretStr
     ALGO: str = "HS256"
-    #TOKEN_EXPIRE_MIN: int = 30
-
     ACCESS_TOKEN_EXPIRE_MINUTES:int = Field(default=15, description="Access token expire minutes ")
     REFRESH_TOKEN_EXPIRE_DAYS:int = Field(default=30, description="Refresh token expire days")
     REFRESH_TOKEN_MAX_LIFETIME_DAYS:int = Field(default=90, description="Refresh token max expire days")
+    #cleanup sessions
+    EXPIRED_SESSION_RETENTION_DAYS:int = Field(default=7,description="Grace period before cleaning up expired sessions")
 
     # mail service
     MAIL_USERNAME: EmailStr = Field(..., description="Gmail address")

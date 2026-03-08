@@ -48,11 +48,20 @@ services:
       retries: 3
 
     restart: unless-stopped
+  
+  scheduler:
+    build: 
+      context: .
+      dockerfile: docker/scheduler/Dockerfile
+    networks:
+      - backend
+    env_file:
+      - .env
+    restart: unless-stopped
 
 networks:
   backend : 
     driver: bridge #by default it is bridge
 
-# volumes:
-#   redis_data:   #volume for persistence
+
 
