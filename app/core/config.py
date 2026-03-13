@@ -36,9 +36,10 @@ class Settings(BaseSettings):
     # redis settings
     REDIS_HOST: str = Field(..., description="Redis host")
     REDIS_PORT: str = Field(..., description="Redis port")
-    REDIS_DB_RATE_LIMIT:int = Field(default=0, description="Logical seperation for storing rate limiting keys")
-    REDIS_DB_OTP:int = Field(default=1, description="For storing hashed otp")
-    REDIS_DB_CACHE:int = Field(default=2,description="For cache purpose")
+    REDIS_DB_RATE_LIMIT: int = Field(
+        default=0, description="Logical seperation for storing rate limiting keys")
+    REDIS_DB_OTP: int = Field(default=1, description="For storing hashed otp")
+    REDIS_DB_CACHE: int = Field(default=2, description="For cache purpose")
     REDIS_PSWD: Optional[str] = None
     REDIS_USE_SSL: bool = False
 
@@ -49,11 +50,15 @@ class Settings(BaseSettings):
     # auth system
     SECRET_KEY: SecretStr
     ALGO: str = "HS256"
-    #TOKEN_EXPIRE_MIN: int = 30
-
-    ACCESS_TOKEN_EXPIRE_MINUTES:int = Field(default=15, description="Access token expire minutes ")
-    REFRESH_TOKEN_EXPIRE_DAYS:int = Field(default=30, description="Refresh token expire days")
-    REFRESH_TOKEN_MAX_LIFETIME_DAYS:int = Field(default=90, description="Refresh token max expire days")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
+        default=15, description="Access token expire minutes ")
+    REFRESH_TOKEN_EXPIRE_DAYS: int = Field(
+        default=30, description="Refresh token expire days")
+    REFRESH_TOKEN_MAX_LIFETIME_DAYS: int = Field(
+        default=90, description="Refresh token max expire days")
+    # cleanup sessions
+    EXPIRED_SESSION_RETENTION_DAYS: int = Field(
+        default=7, description="Grace period before cleaning up expired sessions")
 
     # mail service
     MAIL_USERNAME: EmailStr = Field(..., description="Gmail address")
@@ -66,14 +71,43 @@ class Settings(BaseSettings):
     MAIL_STARTTLS: bool = Field(default=True)
     MAIL_SSL_TLS: bool = Field(default=False)
 
-    #Otp service
-    OTP_TTL_SECONDS:int = Field(default=300,description="Time for otp to be stored")
-    OTP_KEY_VERIFY:str = Field(...,description="user verification key")
-    OTP_KEY_LOGIN:str = Field(...,description="user login key")
+    # Otp service
+    OTP_TTL_SECONDS: int = Field(
+        default=300, description="Time for otp to be stored")
+    OTP_KEY_VERIFY: str = Field(..., description="user verification key")
+    OTP_KEY_LOGIN: str = Field(..., description="user login key")
 
-    #Cache service
-    CACHE_TTL_SECONDS:int = Field(default=3600,description="Time for cache to be stored")
-    CACHE_KEY:str = Field(...,description="cache key")
+    # Cache service
+    CACHE_TTL_SECONDS: int = Field(
+        default=3600, description="Time for cache to be stored")
+    CACHE_KEY: str = Field(..., description="cache key")
+
+    # # file handling
+    # MAX_FILE_SIZE_MB_AVA: int = 5
+    # MAX_FILE_SIZE_MB_DOC: int = 20
+
+    # ALLOWED_CONTENT_TYPES_DOC: dict[str, str] = Field(default={
+    #     "application/pdf": ".pdf",
+    # }, description="Allowd ext. type for file upload")
+    # ALLOWED_CONTENT_TYPES_AVA: dict[str, str] = Field(default={
+    #     "image/jpeg": ".jpeg",
+    #     "image/png": ".png",
+    # }, description="Allowd ext. type for file upload")
+    # MAGIC_BYTES: dict[str, bytes] = Field(default={
+    #     ".pdf": b"%PDF",
+    #     ".jpeg": b"\xff\xd8\xff",
+    #     ".png": b"\x89PNG\r\n\x1a\n"
+    # }, description="For validation for file type")
+
+    #file upload url expiry  
+    #FILE_UPLOAD_EXPIRE:int = Field(...,description="File upload ur expired")
+    PRESIGNED_URL_TTL_SECONDS:int = Field(...,description="File upload url TTL in seconds")
+
+    #aws s3 bucket config
+    AWS_ACCESS_KEY_ID:str 
+    AWS_SECRET_ACCESS_KEY:SecretStr
+    AWS_REGION:str
+    S3_BUCKET_NAME:str
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -81,6 +115,14 @@ class Settings(BaseSettings):
         extra="ignore",
         case_sensitive=True,
     )
+
+    # @property
+    # def MAX_FILE_SIZE_DOC(self) -> int:
+    #     return self.MAX_FILE_SIZE_DOC*1024*1024
+
+    # @property
+    # def MAX_FILE_SIZE_AVA(self) -> int:
+    #     return self.MAX_FILE_SIZE_MB_AVA*1024*1024
 
     @property
     def DATABASE_URL(self) -> str:

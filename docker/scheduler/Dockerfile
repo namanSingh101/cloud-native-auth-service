@@ -6,36 +6,36 @@ FROM python:3.12-slim AS builder
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \                   
     gcc \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-
 RUN pip install --upgrade pip && pip install -r requirements.txt
-
 
 # ============================
 # Stage 2: runtime image
 # ============================
+
 FROM python:3.12-slim
 
 WORKDIR /app
 
 # install runtime libs necessary for psycopg
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev \    
-    curl \              
+    cron \   
+    libpq5 \             
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
 COPY --from=builder /usr/local/bin /usr/local/bin
-
 COPY . .
+COPY docker/scheduler/crontab /etc/cron.d/session-cleanup
 
-EXPOSE 8000
+RUN chmod 0644 /etc/cron.d/session-cleanup && \
+    crontab /etc/cron.d/session-cleanup
 
-CMD ["uvicorn","app.app:app", "--host","0.0.0.0", "--port","8000","--reload"]
-
-#for production ----> "--workers", "2" and remove --reload
+#cron env var stripping —
+# dump the current environment into /etc/environment at container start,
+# cron reads this file and restores the vars for each job
+CMD printenv > /etc/environment && cron -f

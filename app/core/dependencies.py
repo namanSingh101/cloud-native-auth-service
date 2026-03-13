@@ -6,7 +6,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.core import decode_access_token
+from app.core.security import decode_access_token
 from app.db import get_db
 from app.models import User
 from app.schemas import TokenPayload
