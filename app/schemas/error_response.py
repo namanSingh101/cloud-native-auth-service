@@ -8,4 +8,7 @@ class ErrorResponse(BaseModel):
 
 
 class HealthResponse(BaseModel):
-    status:str
+    api_service:str
+    redis_service:bool
+    otp_service:dict
+    cache_service:dict

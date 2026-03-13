@@ -67,6 +67,9 @@ class User(Base):
     refresh_sessions: Mapped[List["RefreshSession"]] = relationship(  # type: ignore[reportUndefinedVariable]
         back_populates="user", cascade="all, delete-orphan"
     )
+    files:Mapped[List["File"]] = relationship( # type: ignore[reportUndefinedVariable]
+        back_populates="user",cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"User(id={self.id!r},username={self.username},first_name={self.first_name!r},last_name={self.last_name!r},email={self.email!r},phone_number={self.phone_number!r},role={self.role},is_verified={self.is_verified!r},is_active={self.is_active!r},token_version={self.token_version!r},password_hash=*******,updated_at={self.updated_at!r},created_at={self.created_at!r})"

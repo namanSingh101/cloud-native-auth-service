@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime, UTC, timedelta
 from sqlalchemy import delete
 
-from app.core import get_settings
+from app.core.config import get_settings
 from app.db.engine import AsyncSessionLocal
 from app.models import RefreshSession
 
@@ -29,6 +29,9 @@ async def cleanup_expired_sessions() -> int:
             deleted_rows = result.all()
             row_count = len(deleted_rows)
             await session.commit()
+
+            with open("/tmp/scheduler_heartbeat","w") as f:
+                f.write(str(datetime.now(UTC).isoformat())) #for health check
 
             return row_count
 

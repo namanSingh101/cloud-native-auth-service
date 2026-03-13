@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field,model_validator
 from typing import Literal,Optional
+
 from app.utils import StrongPassword
-from app.core import BusinessRuleViolation
 
 
 class Token(BaseModel):
@@ -24,9 +24,9 @@ class NewPswdPayload(BaseModel):
     @model_validator(mode="after")
     def validate_passwords(self):
         if self.new_password != self.confirm_password:
-            raise BusinessRuleViolation("Passwords do not match")
+            raise ValueError("Passwords do not match")
         if self.current_password == self.new_password:
-            raise BusinessRuleViolation("New password must differ from current password")
+            raise ValueError("New password must differ from current password")
         return self
 
 class RefreshTokenRequest(BaseModel):

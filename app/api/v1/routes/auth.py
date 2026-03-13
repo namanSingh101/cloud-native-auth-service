@@ -8,7 +8,10 @@ from sqlalchemy.orm import selectinload
 import uuid
 from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 
-from app.core import get_settings, limiter, get_current_user, create_access_token, verify_password, hash_password, create_refresh_token, hash_refresh_token, decode_access_token
+from app.core.config import get_settings
+from app.core.rate_limiter import limiter 
+from app.core.dependencies import get_current_user
+from app.core.security import create_access_token, verify_password, hash_password, create_refresh_token, hash_refresh_token, decode_access_token
 from app.db import get_db
 from app.models import User, RefreshSession
 from app.schemas import Token, NewPswdPayload, ApiResponse, RefreshTokenRequest

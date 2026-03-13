@@ -1,12 +1,14 @@
 from fastapi import HTTPException,Request,status,Response
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+import json
 
-from app.core import AppException
+from app.core.global_error import AppException
 from app.schemas import ErrorResponse
 
 
 async def app_exception_handler(request:Request,exc:AppException)->JSONResponse:
+    print("app exce")
     return JSONResponse(
         status_code=exc.status_code,
         content=ErrorResponse(
@@ -26,12 +28,14 @@ async def http_exception_handler(request: Request, exc: HTTPException)->JSONResp
     )
 
 async def validation_exception_handler(request:Request,exc:RequestValidationError)->JSONResponse:
+    print("app exce 1")
+    errors = json.loads(json.dumps(exc.errors(), default=str))
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         content=ErrorResponse(
             error_code="VALIDATION_ERROR",
             message="Invalid request payload",
-            details={"errors": exc.errors()}
+            details={"errors": errors}
         ).model_dump(exclude_none=True)
     )
 

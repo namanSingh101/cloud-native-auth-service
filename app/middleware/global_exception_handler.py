@@ -3,8 +3,10 @@ from fastapi import Request,status
 from fastapi.exceptions import RequestValidationError
 from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from app.core import AppException
 from fastapi.responses import JSONResponse
+
+from app.core.global_error import AppException
+
 from app.schemas import ErrorResponse
 
 

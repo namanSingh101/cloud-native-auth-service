@@ -2,7 +2,7 @@ import re
 from pydantic.functional_validators import AfterValidator
 from typing import Annotated
 
-from app.core import BusinessRuleViolation
+from app.core.global_error import BusinessRuleViolation
 
 PASSWORD_REGEX = re.compile(
     r"^(?=.*[a-z])"

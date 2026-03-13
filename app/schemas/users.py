@@ -4,7 +4,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional,Annotated
 
-from app.core import BusinessRuleViolation
 from app.utils import StrongPassword,PhoneNumber
 
 Name = Annotated[str,Field(min_length=2,max_length=50)]
@@ -42,7 +41,7 @@ class UserUpdate(BaseModel):
     @classmethod
     def check_at_least_one_field(cls,values):
         if not any(values.values()):
-            raise BusinessRuleViolation("Unauthorised update","Empty update found please provide at least one field")
+            raise ValueError("Unauthorised update","Empty update found please provide at least one field")
         return values
 
 class UserPublicResponse(BaseModel):

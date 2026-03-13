@@ -5,7 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
 from pydantic import NameEmail
 
-from app.core import get_settings, limiter, get_current_user, hash_password,get_otp_manager,OTPRedisManager
+from app.core.config import get_settings
+from app.core.rate_limiter import limiter 
+from app.core.security import  hash_password
+from app.core.dependencies import get_current_user
+from app.core.redis import OTPRedisManager,get_otp_manager
 from app.db import get_db
 from app.models import User
 from app.services import send_otp_email
@@ -17,7 +21,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 settings = get_settings()
 
 
-@router.get("/me", response_model=ApiResponse[UserPrivateResponse], response_model_exclude_none=True)
+@router.get("/me", response_model=ApiResponse[UserPrivateResponse], response_model_exclude_none=True,status_code=status.HTTP_200_OK)
 @limiter.limit("20/minute")
 async def read_me(request: Request, response: Response, current_user: Annotated[User, Depends(get_current_user)], db: Annotated[AsyncSession, Depends(get_db)]) -> ApiResponse[UserPrivateResponse]:
     """ get currently authenticated user. """

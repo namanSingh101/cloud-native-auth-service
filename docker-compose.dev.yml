@@ -1,6 +1,6 @@
 services:
   fastapi:
-    image: eric/fastapi-api:1.0
+    image: naman/fastapi-api:1.0
     build:
       context: .
       dockerfile: Dockerfile
@@ -28,10 +28,16 @@ services:
       - backend
     
   redis:
-    image: redis:8.4-alpine
+    image:  naman/redis_db:1.0 
+    build:
+      context: .
+      dockerfile: docker/redis/Dockerfile.redis
     container_name: redis_server
+    command: ["--requirepass", "${REDIS_PSWD}"]
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
+    env_file:
+      - .env
     networks:
       - backend
     logging:
@@ -42,14 +48,14 @@ services:
     # volumes:
     #   - redis_data:/data #persist redis data (data folder mount point and redis_data is volume)
     healthcheck:
-      test : ["CMD","redis-cli","ping"]
+      test : ["CMD", "redis-cli", "-a", "${REDIS_PSWD}", "ping"]
       interval: 5s
       timeout: 3s 
       retries: 3
-
     restart: unless-stopped
   
   scheduler:
+    image: naman/scheduler:1.0
     build: 
       context: .
       dockerfile: docker/scheduler/Dockerfile
@@ -57,6 +63,12 @@ services:
       - backend
     env_file:
       - .env
+    healthcheck:
+      test : ["CMD-SHELL", "find /tmp/scheduler_heartbeat -mmin -45 | grep -q ."]
+      interval: 30m
+      timeout: 10s
+      retries: 2
+      start_period: 35m # grace period — first run hasn't happened yet at container start
     restart: unless-stopped
 
 networks:

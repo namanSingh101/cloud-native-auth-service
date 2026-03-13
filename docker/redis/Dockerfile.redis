@@ -1,0 +1,23 @@
+#alpine-linux 
+FROM redis:8.4-alpine 
+
+# Install build dependencies for potential modules apk--> alpine package manager 
+RUN apk add --no-cache tzdata
+
+# Create non-root user for security we create a redis-group and redis-user and add that user to group 
+RUN addgroup -S redis-group && adduser -S redis-user -G redis-group
+
+# Create directories with proper permissions for redis-user and redis-group
+RUN mkdir -p /data /etc/redis /var/log/redis \
+    && chown -R redis-user:redis-group /data /etc/redis /var/log/redis
+
+# Copy custom Redis configuration
+COPY docker/redis/redis.conf /etc/redis/redis.conf
+RUN chown redis-user:redis-group /etc/redis/redis.conf && chmod 644 /etc/redis/redis.conf
+
+USER redis-user
+
+EXPOSE 6379
+
+#we have used entrypoint so that it can't be overriden by mistake 
+ENTRYPOINT ["redis-server", "/etc/redis/redis.conf"] 
